@@ -1,0 +1,4 @@
+scenario,outage_event_count,outage_duration_hours,critical_load_fraction,critical_load_mwh,critical_load_served_mwh,critical_load_served_ratio,lpsp,eens_mwh,loss_of_load_hours,survivable_outage_duration_h,survivable_outage_duration_h_mean
+battery_only,4,48.0,0.55,127.987035,127.9659,0.9998348660862407,0.00016513391375932128,0.021135000000001236,1.0,7.0,37.75
+diesel_battery,4,48.0,0.55,127.987035,93.08270454749999,0.727282295019179,0.272717704980821,34.90433045250001,66.0,4.0,13.75
+battery_hydrogen,4,48.0,0.55,127.987035,127.987035,1.0,0.0,0.0,0.0,48.0,48.0

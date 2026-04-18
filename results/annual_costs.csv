@@ -1,0 +1,4 @@
+scenario,label,annualized_capital_usd,fixed_om_usd,diesel_fuel_usd,carbon_cost_usd,variable_om_usd,unmet_load_penalty_usd,total_annual_cost_usd,lcoe_usd_per_mwh_served
+battery_only,PV + battery,1421557.4616934303,376500.0,0.0,0.0,9764.569473525,11735022.564750003,13542844.595916959,1466.726731212302
+diesel_battery,PV + diesel + battery,650367.2583710315,172250.0,1364143.4369816,0.0,1181.9840737199997,0.0,2187942.6794263516,210.2399855666999
+battery_hydrogen,PV + battery + hydrogen,5000937.205877685,1324500.0,0.0,0.0,23462.347002651957,0.0,6348899.5528803365,610.0674222013685

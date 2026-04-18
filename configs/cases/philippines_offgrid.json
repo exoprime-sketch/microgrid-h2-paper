@@ -1,0 +1,33 @@
+{
+  "analysis_year": 2025,
+  "case_study": {
+    "case_id": "philippines_offgrid_reference",
+    "region": "ASEAN",
+    "country": "Philippines",
+    "context": "Representative off-grid island or remote distribution area",
+    "timezone": "Asia/Manila",
+    "candidate_weather_sources": ["NASA POWER hourly CSV", "ERA5 hourly CSV export"],
+    "notes": "Use as a publication-ready structure for replacing synthetic PV with site-specific hourly weather."
+  },
+  "load_archetype": {
+    "peak_demand_mw": 1.65,
+    "load_factor": 0.72,
+    "evening_peak_strength": 0.30,
+    "morning_peak_strength": 0.10,
+    "commercial_load_fraction": 0.14,
+    "seasonal_multiplier": [1.02, 1.03, 1.04, 1.05, 1.04, 1.02, 0.99, 0.98, 0.99, 1.00, 1.01, 1.03],
+    "tourism_load": {
+      "peak_months": [3, 4, 12],
+      "peak_month_multiplier": 1.08
+    },
+    "random_noise_fraction": 0.025,
+    "seed": 42
+  },
+  "weather": {
+    "source": "synthetic_until_replaced",
+    "synthetic_seed": 42,
+    "tropical_solar_resource": true,
+    "pv_derate": 0.82,
+    "temperature_coefficient_per_c": -0.004
+  }
+}

@@ -1,0 +1,15 @@
+[project]
+name = "microgrid-h2-paper"
+version = "0.1.0"
+description = "Minimal full-year Pyomo dispatch baseline for island microgrid battery, diesel, and hydrogen comparisons."
+requires-python = ">=3.11"
+dependencies = [
+    "numpy==2.4.4",
+    "pandas==3.0.2",
+    "matplotlib==3.10.8",
+    "pyomo==6.10.0",
+    "highspy==1.14.0",
+]
+
+[tool.setuptools]
+packages = ["model"]
