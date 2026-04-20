@@ -1,5 +1,5 @@
 {
-  "dataset": "data/synthetic_island_8760.csv",
+ "dataset": "data/philippines_offgrid_8760.csv",
   "solver": "appsi_highs",
   "analysis_year": 2025,
   "case_study": {

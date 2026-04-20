@@ -1,0 +1,5 @@
+An 8760-h real-weather framework screens hydrogen value in islanded microgrids
+Diesel-battery is least-cost in the base case but weak under prolonged outages
+Battery-hydrogen maintains full critical-load service for 48-h outage events
+Hydrogen becomes defensible beyond diesel-cost, outage, carbon, and CAPEX thresholds
+Hydrogen acts as a long-duration resilience resource, not a universal substitute

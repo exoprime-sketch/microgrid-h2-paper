@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use this repository, please cite the manuscript and repository release."
+title: "microgrid-h2-paper"
+type: software
+authors:
+  - family-names: "Lee"
+    given-names: "Jaewon"
+    affiliation: "National Institute of Green Technology, Republic of Korea"
+repository-code: "https://github.com/exoprime-sketch/microgrid-h2-paper"
+license: "MIT"
+keywords:
+  - islanded microgrid
+  - hydrogen storage
+  - resilience
+  - outage analysis
+  - long-duration storage
+  - techno-economic analysis
+  - critical load
+abstract: "Submission-ready Applied Energy package for a fixed-capacity 8760-h real-weather operational threshold study of battery-hydrogen hybrid microgrids in islanded power systems."
