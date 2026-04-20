@@ -1,0 +1,18 @@
+Graphical abstract layout (recommended)
+
+Left panel: candidate portfolios
+- PV + battery
+- PV + diesel + battery
+- PV + battery + hydrogen
+
+Center panel: method
+- 8760-h real-weather dispatch
+- outage-focused resilience assessment
+- threshold screening across diesel cost / outage duration / carbon price / H2 CAPEX
+
+Right panel: main message
+- Base case: diesel-battery = least-cost benchmark
+- Threshold result: hydrogen becomes defensible only under high-risk conditions
+- Interpretation: hydrogen is a long-duration resilience resource, not a universal diesel substitute
+
+Avoid any AI-generated artwork. Use clean vector icons or simple shapes created manually.

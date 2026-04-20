@@ -1,0 +1,17 @@
+Dear Editor,
+
+Please consider our manuscript entitled "Cost–Resilience Thresholds for Battery–Hydrogen Hybrid Microgrids in Islanded Power Systems: An 8760-h Real-Weather Philippines Study" for publication in Applied Energy as a Full Length Research Article.
+
+This manuscript fits the scope of Applied Energy at the intersection of microgrids and local energy systems, energy storage, hydrogen integration, and resilience-oriented energy-system decision-making. The paper addresses a narrower but practically important question than full capacity expansion: under fixed candidate portfolio capacities and real-weather hourly operation, when does hydrogen materially shift the cost–resilience frontier of an islanded microgrid relative to diesel-based flexibility?
+
+To answer this question, the study develops an 8760-h chronological operational framework and combines it with outage-focused resilience assessment using critical-load-served ratio, expected energy not served, and survivable outage duration. A representative off-grid Philippines archetype is used to compare battery-only, diesel-battery, and battery-hydrogen portfolios. The results show that hydrogen is not a universally least-cost option. Instead, its value emerges only beyond identifiable threshold conditions shaped by outage severity, delivered diesel cost, carbon exposure, and hydrogen capital cost.
+
+We believe the manuscript will be of interest to Applied Energy readers working on islanded power systems, long-duration storage, hydrogen-based microgrids, and resilience-oriented planning under high-risk operating conditions.
+
+This manuscript is original, has not been published previously except as permitted by journal policy, and is not under consideration elsewhere. The submission package includes article highlights and supplementary material. A public repository containing the code, configuration files, and processed case-study datasets will be released upon acceptance.
+
+Thank you for your consideration.
+
+Sincerely,
+Jaewon Lee
+National Institute of Green Technology, Republic of Korea

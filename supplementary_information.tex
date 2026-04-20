@@ -1,0 +1,100 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{booktabs,tabularx,longtable,array}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\title{Supplementary Information\\Cost--Resilience Thresholds for Battery--Hydrogen Hybrid Microgrids in Islanded Power Systems}
+\author{Jaewon Lee}
+\date{}
+\begin{document}
+\maketitle
+
+\section*{Supplementary file caption}
+This supplementary file documents the fixed-portfolio definitions, synthetic-load construction, outage-setting rationale, screened parameter ranges, and reproducibility workflow used in the main manuscript.
+
+\section*{S1. Fixed portfolio definitions and design intent}
+Table~S1 reports the fixed capacities used in the three candidate portfolios. These values are taken directly from the scenario configuration used to generate the submitted results.
+
+\begin{longtable}{p{2.2cm}p{2.5cm}rrrrrr}
+\caption{Fixed capacities used in the candidate portfolios.}\\
+\toprule
+Portfolio & Label & PV (MW) & Battery power (MW) & Battery energy (MWh) & Diesel (MW) & Electrolyzer (MW) & Fuel cell (MW) \\
+\midrule
+\endfirsthead
+\toprule
+Portfolio & Label & PV (MW) & Battery power (MW) & Battery energy (MWh) & Diesel (MW) & Electrolyzer (MW) & Fuel cell (MW) \\
+\midrule
+\endhead
+battery\_only & PV + battery & 7.0 & 2.2 & 24.0 & 0.0 & 0.0 & 0.0 \\
+diesel\_battery & PV + diesel + battery & 2.8 & 1.5 & 8.0 & 2.4 & 0.0 & 0.0 \\
+battery\_hydrogen & PV + battery + hydrogen & 14.0 & 2.0 & 12.0 & 0.0 & 5.0 & 2.2 \\
+\bottomrule
+\end{longtable}
+
+The battery--hydrogen portfolio additionally includes a hydrogen tank with a fixed inventory capacity of 50{,}000 kg. The fixed-capacity design is intentional: it allows the manuscript to compare operational and resilience behavior across candidate portfolios under common assumptions without claiming endogenous optimal sizing.
+
+\section*{S2. Synthetic load archetype and case-study inputs}
+The case-study inputs were generated from the scenario file and the prepared 8760-hour dataset used by the dispatch model. The synthetic load archetype is calibrated using the following inputs:
+\begin{itemize}[leftmargin=1.5em]
+  \item peak demand = 1.65 MW
+  \item load factor = 0.72
+  \item evening peak strength = 0.30
+  \item morning peak strength = 0.10
+  \item commercial load fraction = 0.14
+  \item tourism multiplier = 1.08 in March, April, and December
+  \item seasonal monthly multipliers = [1.02, 1.03, 1.04, 1.05, 1.04, 1.02, 0.99, 0.98, 0.99, 1.00, 1.01, 1.03]
+  \item random noise fraction = 0.025 with seed = 42
+\end{itemize}
+
+This construction is not intended to reproduce a licensed feeder's exact dispatch history. Its purpose is to provide a transparent island-like load profile that preserves explicit assumptions about diurnal shape, seasonal variation, commercial demand share, and tourism-sensitive peaks.
+
+\section*{S3. Outage-setting rationale and robustness note}
+The base resilience setting assumes 4 outage events per year, each with 48 h duration, a critical-load fraction of 0.55, and diesel unavailability during the outage windows. This should be interpreted as a severe island contingency stress case that represents fuel-logistics disruption rather than a universal assumption for all outages.
+
+The base resilience results are:
+\begin{itemize}[leftmargin=1.5em]
+  \item battery\_only: CLSR = 1.000, EENS = 0.0 MWh, survivable outage duration = 48 h
+  \item diesel\_battery: CLSR = 0.643, EENS = 45.7 MWh, survivable outage duration = 3 h
+  \item battery\_hydrogen: CLSR = 1.000, EENS = 0.0 MWh, survivable outage duration = 48 h
+\end{itemize}
+
+Reviewer-facing robustness message: the diesel-unavailable setting is used to test whether hydrogen materially changes the resilience envelope under severe local-resource constraints. The paper's claim is therefore conditional and screening-oriented. It does not assert that diesel is unavailable in every real outage, nor that the reported ranking would be identical under all diesel-support assumptions.
+
+\section*{S4. Screened parameter ranges and rationale}
+Table~S4 summarizes the exogenous dimensions used for threshold screening.
+
+\begin{tabularx}{\textwidth}{p{3.3cm}p{3cm}X}
+\toprule
+Dimension & Values used & Rationale \\
+\midrule
+Delivered diesel cost & 180, 380, 700 USD/MWh & Screens low, base, and high fuel-logistics conditions for remote island supply chains. \\
+Outage duration & 12, 48, 96 h & Captures short, severe, and prolonged outage conditions relevant to resilience screening. \\
+Hydrogen CAPEX multiplier & 0.45, 0.70, 1.00 & Tests how threshold movement responds to lower hydrogen subsystem cost assumptions. \\
+Carbon price & 0, 150, 300 USD/tCO$_2$ & Represents a neutral case plus progressively stronger carbon-exposure stress. \\
+\bottomrule
+\end{tabularx}
+
+At the base outage duration of 48 h and carbon price of 150 USD/tCO$_2$, the annual cost difference between battery--hydrogen and diesel--battery is positive at low diesel cost and high hydrogen CAPEX, but becomes negative when delivered diesel cost reaches 700 USD/MWh and the hydrogen CAPEX multiplier is reduced to 0.70 or 0.45. This is the threshold logic visualized in the main-text heat map.
+
+\section*{S5. Reproducibility workflow and repository-ready contents}
+The submission package is backed by a repository-ready workflow containing:
+\begin{itemize}[leftmargin=1.5em]
+  \item \texttt{configs/scenarios.json} for case, cost, resilience, and sensitivity assumptions
+  \item \texttt{data/philippines\_offgrid\_8760.csv} and \texttt{data/synthetic\_island\_8760.csv}
+  \item dispatch model modules in \texttt{model/}
+  \item reproducible scripts in \texttt{scripts/}
+  \item output tables in \texttt{results/}
+  \item generated figures in \texttt{figures/}
+\end{itemize}
+
+The exact Windows commands documented in the repository README are:
+\begin{verbatim}
+.\.venv\Scripts\python scripts\generate_synthetic_data.py
+.\.venv\Scripts\python scripts\run_scenarios.py
+.\.venv\Scripts\python scripts\run_sensitivity.py
+.\.venv\Scripts\python scripts\plot_results.py
+\end{verbatim}
+
+This supplementary file is intended to reduce reviewer ambiguity about portfolio definitions, scenario inputs, and the reproducibility status of the paper. A public repository release can be created upon acceptance without changing the scientific content of the submitted manuscript.
+
+\end{document}
