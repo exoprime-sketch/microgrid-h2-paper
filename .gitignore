@@ -12,3 +12,4 @@ __pycache__/
 *.spl
 # Claude Code internal state
 .claude/
+*.zip
