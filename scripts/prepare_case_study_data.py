@@ -37,8 +37,13 @@ def main() -> None:
     parser.add_argument(
         "--weather-file",
         type=Path,
-        default=None,
-        help="Optional NASA POWER or ERA5 hourly CSV. If omitted, synthetic PV is used.",
+        default=ROOT / "data" / "external" / "nasa_power_philippines_2025.csv",
+        help=(
+            "Hourly weather CSV (NASA POWER or ERA5). "
+            "Defaults to the canonical NASA POWER 2025 file at "
+            "data/external/nasa_power_philippines_2025.csv. "
+            "Pass --weather-file synthetic to fall back to the synthetic archetype."
+        ),
     )
     parser.add_argument(
         "--weather-format",
@@ -77,8 +82,16 @@ def main() -> None:
     )
 
     weather_file = args.weather_file
-    if weather_file is not None:
+    use_synthetic = str(weather_file).lower() == "synthetic"
+    if not use_synthetic:
         weather_path = weather_file if weather_file.is_absolute() else ROOT / weather_file
+        if not weather_path.exists():
+            raise FileNotFoundError(
+                f"Weather file not found: {weather_path}\n"
+                "Place the NASA POWER CSV at data/external/nasa_power_philippines_2025.csv, "
+                "pass an explicit --weather-file path, "
+                "or use --weather-file synthetic to generate a synthetic PV profile."
+            )
         pv_resource = load_external_weather_resource(
             weather_path,
             source_format=args.weather_format,

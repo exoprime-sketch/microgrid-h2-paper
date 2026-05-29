@@ -96,6 +96,11 @@ def _simulate_single_outage(
     battery_power_mw = _scenario_float(scenario, "battery_power_mw")
     battery_energy_mwh = _scenario_float(scenario, "battery_energy_mwh")
     diesel_mw = _scenario_float(scenario, "diesel_mw")
+    # D1/D2/D3 optional parameters — all default to original behaviour when absent
+    diesel_derate        = float(resilience.get("diesel_derate_fraction", 1.0))
+    diesel_budget_mwh    = float(resilience.get("diesel_fuel_budget_h", float("inf"))) * diesel_mw
+    diesel_delay_h       = int(resilience.get("diesel_delay_h", 0))
+    diesel_fuel_used_mwh = 0.0
     electrolyzer_mw = _scenario_float(scenario, "electrolyzer_mw")
     fuel_cell_mw = _scenario_float(scenario, "fuel_cell_mw")
     h2_tank_kg = _scenario_float(scenario, "h2_tank_kg")
@@ -155,9 +160,13 @@ def _simulate_single_outage(
             h2_inventory -= fuel_cell_delivery * h2_kg_per_mwh_fuel_cell
             remaining_load -= fuel_cell_delivery
 
-        if remaining_load > 0.0 and diesel_available and diesel_mw > 0.0:
-            diesel_delivery = min(remaining_load, diesel_mw)
+        effective_diesel_mw = diesel_mw * diesel_derate
+        diesel_ready = diesel_available and (offset >= diesel_delay_h)
+        fuel_remaining = diesel_budget_mwh - diesel_fuel_used_mwh
+        if remaining_load > 0.0 and diesel_ready and effective_diesel_mw > 0.0 and fuel_remaining > 1e-9:
+            diesel_delivery = min(remaining_load, effective_diesel_mw, fuel_remaining)
             remaining_load -= diesel_delivery
+            diesel_fuel_used_mwh += diesel_delivery
 
         hour_unserved = max(0.0, remaining_load)
         if hour_unserved > 1.0e-7:

@@ -1,5 +1,5 @@
 {
- "dataset": "data/philippines_offgrid_8760.csv",
+  "dataset": "data/philippines_offgrid_8760.csv",
   "solver": "appsi_highs",
   "analysis_year": 2025,
   "case_study": {
@@ -14,25 +14,43 @@
     "discount_rate": 0.07,
     "project_life_years": 20,
     "unmet_load_penalty_usd_per_mwh": 10000.0,
-    "diesel_co2_t_per_mwh": 0.70,
+    "diesel_co2_t_per_mwh": 0.7,
     "carbon_price_usd_per_t": 0.0
   },
   "load_archetype": {
     "peak_demand_mw": 1.65,
     "load_factor": 0.72,
-    "evening_peak_strength": 0.30,
-    "morning_peak_strength": 0.10,
+    "evening_peak_strength": 0.3,
+    "morning_peak_strength": 0.1,
     "commercial_load_fraction": 0.14,
-    "seasonal_multiplier": [1.02, 1.03, 1.04, 1.05, 1.04, 1.02, 0.99, 0.98, 0.99, 1.00, 1.01, 1.03],
+    "seasonal_multiplier": [
+      1.02,
+      1.03,
+      1.04,
+      1.05,
+      1.04,
+      1.02,
+      0.99,
+      0.98,
+      0.99,
+      1.0,
+      1.01,
+      1.03
+    ],
     "tourism_load": {
-      "peak_months": [3, 4, 12],
+      "peak_months": [
+        3,
+        4,
+        12
+      ],
       "peak_month_multiplier": 1.08
     },
     "random_noise_fraction": 0.025,
     "seed": 42
   },
   "weather": {
-    "source": "synthetic",
+    "source": "nasa-power",
+    "dataset_note": "NASA POWER CERES SYN1deg + MERRA-2, year 2025, grid cell 11.0N 123.0E, UTC; file data/external/nasa_power_philippines_2025.csv",
     "synthetic_seed": 42,
     "tropical_solar_resource": true,
     "pv_derate": 0.82,
@@ -47,11 +65,30 @@
     "value_of_lost_load_usd_per_mwh": 5000.0
   },
   "sensitivity": {
-    "scenarios": ["diesel_battery", "battery_hydrogen"],
-    "delivered_diesel_cost_usd_per_mwh": [180.0, 380.0, 700.0],
-    "outage_duration_hours": [12.0, 48.0, 96.0],
-    "hydrogen_capex_multiplier": [0.45, 0.70, 1.0],
-    "carbon_price_usd_per_t": [0.0, 150.0, 300.0],
+    "scenarios": [
+      "diesel_battery",
+      "battery_hydrogen"
+    ],
+    "delivered_diesel_cost_usd_per_mwh": [
+      180.0,
+      380.0,
+      700.0
+    ],
+    "outage_duration_hours": [
+      12.0,
+      48.0,
+      96.0
+    ],
+    "hydrogen_capex_multiplier": [
+      0.45,
+      0.7,
+      1.0
+    ],
+    "carbon_price_usd_per_t": [
+      0.0,
+      150.0,
+      300.0
+    ],
     "heatmap_filter": {
       "outage_duration_hours": 48.0,
       "carbon_price_usd_per_t": 150.0
@@ -74,11 +111,11 @@
   "defaults": {
     "battery_charge_efficiency": 0.95,
     "battery_discharge_efficiency": 0.95,
-    "initial_battery_soc_fraction": 0.50,
+    "initial_battery_soc_fraction": 0.5,
     "electrolyzer_efficiency_lhv": 0.67,
-    "fuel_cell_efficiency_lhv": 0.50,
+    "fuel_cell_efficiency_lhv": 0.5,
     "h2_lhv_kwh_per_kg": 33.33,
-    "initial_h2_inventory_fraction": 0.50
+    "initial_h2_inventory_fraction": 0.5
   },
   "scenarios": [
     {
@@ -112,7 +149,7 @@
       "diesel_mw": 0.0,
       "electrolyzer_mw": 5.0,
       "fuel_cell_mw": 2.2,
-      "h2_tank_kg": 50000.0
+      "h2_tank_kg": 10000.0
     }
   ]
 }

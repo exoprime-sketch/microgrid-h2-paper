@@ -4,3 +4,11 @@ __pycache__/
 .pytest_cache/
 *.log
 .ipynb_checkpoints/
+# LaTeX build intermediates
+*.aux
+*.bbl
+*.blg
+*.out
+*.spl
+# Claude Code internal state
+.claude/

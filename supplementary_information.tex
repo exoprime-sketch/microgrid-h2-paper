@@ -31,7 +31,7 @@ battery\_hydrogen & PV + battery + hydrogen & 14.0 & 2.0 & 12.0 & 0.0 & 5.0 & 2.
 \bottomrule
 \end{longtable}
 
-The battery--hydrogen portfolio additionally includes a hydrogen tank with a fixed inventory capacity of 50{,}000 kg. The fixed-capacity design is intentional: it allows the manuscript to compare operational and resilience behavior across candidate portfolios under common assumptions without claiming endogenous optimal sizing.
+The battery--hydrogen portfolio additionally includes a hydrogen tank with a fixed inventory capacity of 10{,}000 kg. The fixed-capacity design is intentional: it allows the manuscript to compare operational and resilience behavior across candidate portfolios under common assumptions without claiming endogenous optimal sizing.
 
 \section*{S2. Synthetic load archetype and case-study inputs}
 The case-study inputs were generated from the scenario file and the prepared 8760-hour dataset used by the dispatch model. The synthetic load archetype is calibrated using the following inputs:
@@ -87,14 +87,68 @@ The submission package is backed by a repository-ready workflow containing:
   \item generated figures in \texttt{figures/}
 \end{itemize}
 
-The exact Windows commands documented in the repository README are:
+The canonical input dataset is real NASA POWER hourly data (CERES SYN1deg + MERRA-2, year 2025, grid cell 11.0$^\circ$N 123.0$^\circ$E, UTC), pre-placed at \texttt{data/external/nasa\_power\_philippines\_2025.csv}. The exact Windows commands documented in the repository README are:
+
+\textbf{Step 1 — base scenarios and main sensitivity:}
 \begin{verbatim}
-.\.venv\Scripts\python scripts\generate_synthetic_data.py
+.\.venv\Scripts\python scripts\prepare_case_study_data.py
 .\.venv\Scripts\python scripts\run_scenarios.py
 .\.venv\Scripts\python scripts\run_sensitivity.py
 .\.venv\Scripts\python scripts\plot_results.py
 \end{verbatim}
 
+\textbf{Steps E1--E6 — extended analyses:}
+\begin{verbatim}
+.\.venv\Scripts\python scripts\run_fine_sweep.py
+.\.venv\Scripts\python scripts\plot_fine_sweep.py
+.\.venv\Scripts\python scripts\run_cost_driver.py
+.\.venv\Scripts\python scripts\plot_cost_driver.py
+.\.venv\Scripts\python scripts\run_matched_backbone.py
+.\.venv\Scripts\python scripts\plot_matched_backbone.py
+.\.venv\Scripts\python scripts\run_outage_robustness.py
+.\.venv\Scripts\python scripts\plot_outage_robustness.py
+.\.venv\Scripts\python scripts\run_dynamics.py
+.\.venv\Scripts\python scripts\plot_dynamics.py
+\end{verbatim}
+
 This supplementary file is intended to reduce reviewer ambiguity about portfolio definitions, scenario inputs, and the reproducibility status of the paper. A public repository release can be created upon acceptance without changing the scientific content of the submitted manuscript.
+
+\section*{S6. Primary frequency-stability screening: model parameters and regime framing}
+
+The reduced-order primary frequency-response model (E6) uses the aggregate swing equation plus first-order droop for each responding source:
+\[
+\frac{d\Delta f}{dt} = \frac{f_0}{2 H_\mathrm{eq} S_\mathrm{sys}}
+\bigl[\textstyle\sum_i \delta P_i - \Delta P_\mathrm{dist}(t) - D_\mathrm{eq}\,\Delta f\bigr],
+\qquad
+\tau_i\,\frac{d(\delta P_i)}{dt} = -\delta P_i - K_i\,\Delta f,
+\]
+where $f_0 = 50$\,Hz, $S_\mathrm{sys} = 1.65$\,MW, and $D_\mathrm{eq} = 1.5\,P_\mathrm{load}/f_0$.
+This is a primary-frequency-response screening model only.
+Sustained power rebalancing after large PV loss or generator trip is provided by secondary control, under-frequency load shedding, and hourly dispatch --- none of which are modelled here.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Dynamics model parameter values and sources.}
+\label{tab:dynparams}
+\begin{tabular}{llll}
+\toprule
+Parameter & Value & Unit & Source \\
+\midrule
+$H_\mathrm{bat}$ (battery VSM virtual inertia) & 1.0 & s & D'Arco \& Suul 2014 \\
+$H_\mathrm{dg}$ (diesel genset real inertia) & 2.0 & s & Kundur 1994 \\
+Droop$_\mathrm{bat}$ & 5 & \% & IEEE 1547-2018 \\
+Droop$_\mathrm{dg}$ & 4 & \% & Kundur 1994 \\
+Droop$_\mathrm{fc}$ & 6 & \% & Uzunoglu \& Alam 2006 \\
+$\tau_\mathrm{bat}$ (battery inverter) & 0.2 & s & Rocabert et al.\ 2012 \\
+$\tau_\mathrm{dg}$ (diesel governor) & 2.0 & s & CIGRE WG C4.110 \\
+$\tau_\mathrm{fc}$ (fuel cell) & 5.0 & s & Li \& Bhatt 2011 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The 500\,ms windowed RoCoF $= |\Delta f(0.5\,\text{s})| / 0.5$ contextualises instantaneous peaks: the diesel-battery diesel-trip case shows 27\,Hz/s instantaneous but $\approx$3--6\,Hz/s over the first 500\,ms (3.16\,Hz/s for the evening-peak load-step case, 5.90\,Hz/s for the maximum-diesel-trip case), reflecting battery fast-droop recovery ($\tau = 0.2$\,s). The battery-hydrogen portfolio marginally exceeds the 2.0\,Hz/s islanded threshold at peak load (2.06\,Hz/s); tuning the VSM virtual inertia $H$ from 1.0\,s to $\geq 1.2$\,s resolves this as a standard control-parameter choice.
+
+The resilience-adjusted threshold contour (identical layout to the main-text Fig.~3, but using resilience-adjusted annual cost) is provided as Supplementary Fig.~S1 (file \texttt{figures/fig03b\_threshold\_contours\_resilience\_adjusted.pdf}).
 
 \end{document}

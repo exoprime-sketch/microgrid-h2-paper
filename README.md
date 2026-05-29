@@ -163,6 +163,30 @@ Running the full workflow creates:
 - `figures/threshold_heatmap.png`
 - `figures/cost_resilience_tradeoff.png`
 
+## Manuscript
+
+**The current submission-ready manuscript is `main_revised.tex`** (Applied Energy
+resubmission APEN-D-26-09220, major revision). Compile with:
+
+```powershell
+pdflatex -interaction=nonstopmode main_revised.tex
+bibtex main_revised
+pdflatex -interaction=nonstopmode main_revised.tex
+pdflatex -interaction=nonstopmode main_revised.tex
+```
+
+`main.tex` is the original first-submission draft and is retained for reference
+only. All updated numbers, figures (fig02–fig07), and analyses described in the
+response to reviewers are in `main_revised.tex`.
+
+Key changes in this revision:
+- Load archetype re-anchored to local time UTC+8 (Philippines) — evening peak
+  now correctly at local 20:00 (was 04:00 UTC artefact).
+- H2 tank right-sized to 10,000 kg (max LP utilisation 5,595 kg; 44% headroom).
+- Full E1–E6 analyses: fine threshold contour, cost-driver tornado, matched
+  backbone, diesel-outage robustness, frequency stability.
+- Figures fig02–fig07 regenerated; fig02 x-axis in local time (UTC+8).
+
 ## Model Notes
 
 This remains an operations baseline, not a capacity expansion model. Technology capacities are fixed in `configs/scenarios.json`, then hourly dispatch is optimized to minimize annual operating cost and unmet-load penalties. Annual cost is calculated after dispatch by adding annualized capital and fixed O&M.

@@ -96,7 +96,11 @@ def build_calibrated_load_archetype(
     commercial_fraction = float(cfg.get("commercial_load_fraction", 0.12))
     noise_fraction = float(cfg.get("random_noise_fraction", 0.025))
 
-    hour = timestamps.hour.to_numpy()
+    # Diurnal pattern is anchored to LOCAL time (UTC+8 for Philippines).
+    # The returned Series keeps the original UTC index so it stays aligned
+    # with the UTC NASA POWER weather. Only the hour variable is localised.
+    local_hour = ((timestamps + pd.Timedelta(hours=8)).hour).to_numpy()
+    hour = local_hour
     day_of_year = timestamps.dayofyear.to_numpy()
     weekday = timestamps.weekday.to_numpy()
     month = timestamps.month.to_numpy()
