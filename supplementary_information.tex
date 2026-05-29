@@ -1,8 +1,13 @@
 \documentclass[11pt]{article}
 \usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
 \usepackage{booktabs,tabularx,longtable,array}
-\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage[hidelinks]{hyperref}
 \usepackage{enumitem}
+\emergencystretch=3em
+\renewcommand{\thetable}{S\arabic{table}}
 \title{Supplementary Information\\Cost--Resilience Thresholds for Battery--Hydrogen Hybrid Microgrids in Islanded Power Systems}
 \author{Jaewon Lee}
 \date{}
@@ -15,21 +20,22 @@ This supplementary file documents the fixed-portfolio definitions, synthetic-loa
 \section*{S1. Fixed portfolio definitions and design intent}
 Table~S1 reports the fixed capacities used in the three candidate portfolios. These values are taken directly from the scenario configuration used to generate the submitted results.
 
-\begin{longtable}{p{2.2cm}p{2.5cm}rrrrrr}
-\caption{Fixed capacities used in the candidate portfolios.}\\
+\begin{table}[H]
+\centering
+\caption{Fixed capacities used in the candidate portfolios.}
+\label{tab:s1capacities}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{llrrrrrr}
 \toprule
 Portfolio & Label & PV (MW) & Battery power (MW) & Battery energy (MWh) & Diesel (MW) & Electrolyzer (MW) & Fuel cell (MW) \\
 \midrule
-\endfirsthead
-\toprule
-Portfolio & Label & PV (MW) & Battery power (MW) & Battery energy (MWh) & Diesel (MW) & Electrolyzer (MW) & Fuel cell (MW) \\
-\midrule
-\endhead
 battery\_only & PV + battery & 7.0 & 2.2 & 24.0 & 0.0 & 0.0 & 0.0 \\
 diesel\_battery & PV + diesel + battery & 2.8 & 1.5 & 8.0 & 2.4 & 0.0 & 0.0 \\
 battery\_hydrogen & PV + battery + hydrogen & 14.0 & 2.0 & 12.0 & 0.0 & 5.0 & 2.2 \\
 \bottomrule
-\end{longtable}
+\end{tabular}%
+}
+\end{table}
 
 The battery--hydrogen portfolio additionally includes a hydrogen tank with a fixed inventory capacity of 10{,}000 kg. The fixed-capacity design is intentional: it allows the manuscript to compare operational and resilience behavior across candidate portfolios under common assumptions without claiming endogenous optimal sizing.
 
@@ -46,24 +52,32 @@ The case-study inputs were generated from the scenario file and the prepared 876
   \item random noise fraction = 0.025 with seed = 42
 \end{itemize}
 
-This construction is not intended to reproduce a licensed feeder's exact dispatch history. Its purpose is to provide a transparent island-like load profile that preserves explicit assumptions about diurnal shape, seasonal variation, commercial demand share, and tourism-sensitive peaks.
+The diurnal shape is anchored to local time (UTC+8), so the evening peak falls at local 20:00; the prepared series retains a UTC time index for alignment with the NASA POWER weather data. This construction is not intended to reproduce a licensed feeder's exact dispatch history. Its purpose is to provide a transparent island-like load profile that preserves explicit assumptions about diurnal shape, seasonal variation, commercial demand share, and tourism-sensitive peaks.
 
 \section*{S3. Outage-setting rationale and robustness note}
 The base resilience setting assumes 4 outage events per year, each with 48 h duration, a critical-load fraction of 0.55, and diesel unavailability during the outage windows. This should be interpreted as a severe island contingency stress case that represents fuel-logistics disruption rather than a universal assumption for all outages.
 
-The base resilience results are:
+The base resilience results (single representative outage-seed run) are:
 \begin{itemize}[leftmargin=1.5em]
   \item battery\_only: CLSR = 1.000, EENS = 0.0 MWh, survivable outage duration = 48 h
-  \item diesel\_battery: CLSR = 0.643, EENS = 45.7 MWh, survivable outage duration = 3 h
+  \item diesel\_battery: CLSR = 0.654, EENS = 44.3 MWh, survivable outage duration = 1 h (mean 7.3 h)
   \item battery\_hydrogen: CLSR = 1.000, EENS = 0.0 MWh, survivable outage duration = 48 h
 \end{itemize}
+
+Across ten random outage-start seeds the worst-case diesel--battery outcome is more severe (CLSR $\approx 0.58$, 0 h survivable); this worst-case value, rather than the single-seed figure above, is the one reported in the main text (Section~4.5, case D0), because a single optimistic seed understates the diesel-unavailable risk.
 
 Reviewer-facing robustness message: the diesel-unavailable setting is used to test whether hydrogen materially changes the resilience envelope under severe local-resource constraints. The paper's claim is therefore conditional and screening-oriented. It does not assert that diesel is unavailable in every real outage, nor that the reported ranking would be identical under all diesel-support assumptions.
 
 \section*{S4. Screened parameter ranges and rationale}
-Table~S4 summarizes the exogenous dimensions used for threshold screening.
+Table~S2 summarizes the exogenous dimensions used for threshold screening.
 
-\begin{tabularx}{\textwidth}{p{3.3cm}p{3cm}X}
+\begin{table}[H]
+\centering
+\caption{Exogenous dimensions used for threshold screening.}
+\label{tab:s2screen}
+{\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{p{2.8cm}p{2.6cm}p{9.2cm}}
 \toprule
 Dimension & Values used & Rationale \\
 \midrule
@@ -72,32 +86,35 @@ Outage duration & 12, 48, 96 h & Captures short, severe, and prolonged outage co
 Hydrogen CAPEX multiplier & 0.45, 0.70, 1.00 & Tests how threshold movement responds to lower hydrogen subsystem cost assumptions. \\
 Carbon price & 0, 150, 300 USD/tCO$_2$ & Represents a neutral case plus progressively stronger carbon-exposure stress. \\
 \bottomrule
-\end{tabularx}
+\end{tabular}
+}
+\end{table}
 
-At the base outage duration of 48 h and carbon price of 150 USD/tCO$_2$, the annual cost difference between battery--hydrogen and diesel--battery is positive at low diesel cost and high hydrogen CAPEX, but becomes negative when delivered diesel cost reaches 700 USD/MWh and the hydrogen CAPEX multiplier is reduced to 0.70 or 0.45. This is the threshold logic visualized in the main-text heat map.
+\begin{sloppypar}
+At the base outage duration of 48 h and carbon price of 150 USD/tCO$_2$, the annual cost of battery--hydrogen relative to diesel--battery is positive (more expensive) at low delivered diesel cost and full hydrogen CAPEX, and turns negative (cheaper) as delivered diesel cost rises toward the upper screened value of 700 USD/MWh; the crossover occurs at progressively lower diesel cost as the hydrogen CAPEX multiplier falls to 0.70 or 0.45. This is the threshold logic visualized in the main-text contour (Fig.~2).
+\end{sloppypar}
 
 \section*{S5. Reproducibility workflow and repository-ready contents}
 The submission package is backed by a repository-ready workflow containing:
 \begin{itemize}[leftmargin=1.5em]
   \item \texttt{configs/scenarios.json} for case, cost, resilience, and sensitivity assumptions
-  \item \texttt{data/philippines\_offgrid\_8760.csv} and \texttt{data/synthetic\_island\_8760.csv}
+  \item \texttt{data/philippines\_offgrid\_8760.csv} (the 8760-hour model input: real NASA POWER weather and the calibrated UTC+8 load archetype)
   \item dispatch model modules in \texttt{model/}
   \item reproducible scripts in \texttt{scripts/}
   \item output tables in \texttt{results/}
   \item generated figures in \texttt{figures/}
 \end{itemize}
 
-The canonical input dataset is real NASA POWER hourly data (CERES SYN1deg + MERRA-2, year 2025, grid cell 11.0$^\circ$N 123.0$^\circ$E, UTC), pre-placed at \texttt{data/external/nasa\_power\_philippines\_2025.csv}. The exact Windows commands documented in the repository README are:
+The canonical input dataset is real NASA POWER hourly data (CERES SYN1deg + MERRA-2, year 2025, grid cell 11.0$^\circ$N 123.0$^\circ$E, UTC), pre-placed at \texttt{data/external/\allowbreak nasa\_\allowbreak power\_\allowbreak philippines\_2025.csv}. The exact Windows commands documented in the repository README are:
 
-\textbf{Step 1 — base scenarios and main sensitivity:}
+\textbf{Step 1 --- data preparation, base scenarios, and base dispatch figure:}
 \begin{verbatim}
 .\.venv\Scripts\python scripts\prepare_case_study_data.py
 .\.venv\Scripts\python scripts\run_scenarios.py
-.\.venv\Scripts\python scripts\run_sensitivity.py
-.\.venv\Scripts\python scripts\plot_results.py
+.\.venv\Scripts\python scripts\plot_base_dispatch.py
 \end{verbatim}
 
-\textbf{Steps E1--E6 — extended analyses:}
+\textbf{Steps E1--E6 --- extended analyses:}
 \begin{verbatim}
 .\.venv\Scripts\python scripts\run_fine_sweep.py
 .\.venv\Scripts\python scripts\plot_fine_sweep.py
@@ -147,8 +164,8 @@ $\tau_\mathrm{fc}$ (fuel cell) & 5.0 & s & Li \& Bhatt 2011 \\
 \end{tabular}
 \end{table}
 
-The 500\,ms windowed RoCoF $= |\Delta f(0.5\,\text{s})| / 0.5$ contextualises instantaneous peaks: the diesel-battery diesel-trip case shows 27\,Hz/s instantaneous but $\approx$3--6\,Hz/s over the first 500\,ms (3.16\,Hz/s for the evening-peak load-step case, 5.90\,Hz/s for the maximum-diesel-trip case), reflecting battery fast-droop recovery ($\tau = 0.2$\,s). The battery-hydrogen portfolio marginally exceeds the 2.0\,Hz/s islanded threshold at peak load (2.06\,Hz/s); tuning the VSM virtual inertia $H$ from 1.0\,s to $\geq 1.2$\,s resolves this as a standard control-parameter choice.
+The 500\,ms windowed RoCoF $= |\Delta f(0.5\,\text{s})| / 0.5$ contextualises instantaneous peaks. The diesel--battery diesel-trip case shows 27.5\,Hz/s instantaneously but moderates to 5.91\,Hz/s when averaged over the first 500\,ms, reflecting battery fast-droop recovery ($\tau = 0.2$\,s); by contrast, evening-peak load-step disturbances stay below 0.5\,Hz/s over the same window. The battery--hydrogen portfolio marginally exceeds the 2.0\,Hz/s islanded instantaneous-RoCoF threshold at peak load (2.06\,Hz/s); tuning the VSM virtual inertia $H$ from 1.0\,s to $\geq 1.2$\,s resolves this as a standard control-parameter choice.
 
-The resilience-adjusted threshold contour (identical layout to the main-text Fig.~3, but using resilience-adjusted annual cost) is provided as Supplementary Fig.~S1 (file \texttt{figures/fig03b\_threshold\_contours\_resilience\_adjusted.pdf}).
+The resilience-adjusted threshold contour (identical layout to the main-text Fig.~2, but using resilience-adjusted annual cost) is provided as Supplementary Fig.~S1 (file \texttt{figures/fig03b\_threshold\_contours\_resilience\_adjusted.pdf}).
 
 \end{document}
