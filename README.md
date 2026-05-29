@@ -1,72 +1,87 @@
-# Island Microgrid Hydrogen Study Baseline
+# Island Microgrid Hydrogen Study — Applied Energy Revision
 
-This repository is a reproducible, publication-oriented Applied Energy baseline for comparing fixed-capacity off-grid microgrid portfolios:
+Reproducible code and data for the Applied Energy resubmission
+**APEN-D-26-09220** comparing battery--hydrogen against PV--diesel--battery
+portfolios in a Philippine off-grid island. The analysis covers cost thresholds,
+component-level cost drivers, matched-backbone resilience, diesel-support
+robustness, and reduced-order frequency stability.
 
-- PV + battery
+**Portfolios modelled:**
+- PV + battery (battery-only reference)
 - PV + diesel + battery
-- PV + battery + hydrogen
+- PV + battery + hydrogen (10,000 kg H₂ tank)
 
-The dispatch model is a linear Pyomo optimization solved with HiGHS. It includes PV curtailment, diesel generation, battery charge/discharge and SOC, electrolyzer operation, hydrogen tank inventory, fuel cell dispatch, unmet load, annualized capital cost, fixed O&M, variable O&M, delivered diesel fuel cost, carbon cost, and diesel CO2.
+The dispatch model is a linear Pyomo optimisation solved with HiGHS (8760-h,
+fixed-capacity, real NASA POWER weather, calibrated load archetype in local
+time UTC+8).
 
-The project now includes an ASEAN case-study-ready structure with a Philippines off-grid reference case, calibrated synthetic load archetypes, optional NASA POWER or ERA5 hourly weather inputs, resilience KPIs, and sensitivity sweeps.
+## Manuscript
+
+**The current submission-ready manuscript is `main_revised.tex`.**
+Compile with:
+
+```powershell
+pdflatex -interaction=nonstopmode main_revised.tex
+bibtex main_revised
+pdflatex -interaction=nonstopmode main_revised.tex
+pdflatex -interaction=nonstopmode main_revised.tex
+```
+
+Bibliography: `refs.bib` + `refs_additions.bib`.
 
 ## Project Layout
 
 ```text
 configs/                Scenario, cost, resilience, and sensitivity assumptions
 configs/cases/          ASEAN case-study metadata and load/weather settings
-data/                   Prepared 8760-hour model inputs
-data/external/          Optional NASA POWER, ERA5, or generic weather CSV files
-figures/                Generated publication figures
-model/                  Pyomo dispatch, load archetype, weather, and resilience modules
-results/                Dispatch, summary, resilience, and sensitivity CSVs
-scripts/                Reproducible command-line workflows
+data/                   Prepared 8760-hour model inputs (NASA POWER weather, UTC+8 load)
+data/external/          NASA POWER or ERA5 hourly weather CSV files
+figures/                Publication figures fig02–fig07 (PDF + PNG)
+model/                  Pyomo dispatch, load archetype, weather, resilience, dynamics
+results/                Dispatch, summary, resilience, sensitivity, and analysis CSVs
+scripts/                Reproducible run_*.py and plot_*.py workflows
 ```
 
-## Exact Windows Commands
-
-From the repository root in PowerShell:
+## Reproduction (Windows PowerShell)
 
 ```powershell
+# 1. Install dependencies
 python -m venv .venv
 .\.venv\Scripts\python -m pip install -r requirements.txt
-.\.venv\Scripts\python scripts\generate_synthetic_data.py
+
+# 2. Prepare case-study data (NASA POWER weather + UTC+8 load archetype)
+.\.venv\Scripts\python scripts\prepare_case_study_data.py
+
+# 3. Base scenarios (LP dispatch)
 .\.venv\Scripts\python scripts\run_scenarios.py
-.\.venv\Scripts\python scripts\run_sensitivity.py
-.\.venv\Scripts\python scripts\plot_results.py
+
+# 4. E1–E4 analyses
+.\.venv\Scripts\python scripts\run_fine_sweep.py        # E1 threshold contour
+.\.venv\Scripts\python scripts\run_cost_driver.py       # E2 tornado
+.\.venv\Scripts\python scripts\run_matched_backbone.py  # E3 backbone
+.\.venv\Scripts\python scripts\run_outage_robustness.py # E4 robustness
+.\.venv\Scripts\python scripts\run_dynamics.py          # E6 frequency screen
+
+# 5. Figures
+.\.venv\Scripts\python scripts\plot_base_dispatch.py
+.\.venv\Scripts\python scripts\plot_fine_sweep.py
+.\.venv\Scripts\python scripts\plot_cost_driver.py
+.\.venv\Scripts\python scripts\plot_matched_backbone.py
+.\.venv\Scripts\python scripts\plot_outage_robustness.py
+.\.venv\Scripts\python scripts\plot_dynamics.py
 ```
 
-If the virtual environment already exists:
-
-```powershell
-.\.venv\Scripts\python scripts\generate_synthetic_data.py
-.\.venv\Scripts\python scripts\run_scenarios.py
-.\.venv\Scripts\python scripts\run_sensitivity.py
-.\.venv\Scripts\python scripts\plot_results.py
-```
-
-macOS/Linux equivalents:
-
-```bash
-python -m venv .venv
-./.venv/bin/python -m pip install -r requirements.txt
-./.venv/bin/python scripts/generate_synthetic_data.py
-./.venv/bin/python scripts/run_scenarios.py
-./.venv/bin/python scripts/run_sensitivity.py
-./.venv/bin/python scripts/plot_results.py
-```
+macOS/Linux: replace `.\.venv\Scripts\python` with `./.venv/bin/python`.
 
 ## Philippines Case-Study Data
 
-The default command generates `data/synthetic_island_8760.csv` using the Philippines-oriented settings embedded in `configs/scenarios.json`.
+The canonical dataset is `data/philippines_offgrid_8760.csv` — 8760 hourly rows
+with real NASA POWER irradiance (11.0 N, 123.0 E, 2025) and a calibrated
+synthetic load archetype. The load diurnal shape is anchored to **local time
+UTC+8** (evening peak at local 20:00) while timestamps remain in UTC for
+alignment with the weather data.
 
-To prepare the explicit Philippines case-study file with synthetic PV:
-
-```powershell
-.\.venv\Scripts\python scripts\prepare_case_study_data.py --output data\philippines_offgrid_8760.csv
-```
-
-To replace synthetic PV with a NASA POWER hourly CSV:
+To regenerate from the NASA POWER source file:
 
 ```powershell
 .\.venv\Scripts\python scripts\prepare_case_study_data.py `
@@ -76,121 +91,41 @@ To replace synthetic PV with a NASA POWER hourly CSV:
   --output data\philippines_offgrid_8760.csv
 ```
 
-To replace synthetic PV with an ERA5 hourly CSV export:
-
-```powershell
-.\.venv\Scripts\python scripts\prepare_case_study_data.py `
-  --case-config configs\cases\philippines_offgrid.json `
-  --weather-file data\external\era5_philippines_2025.csv `
-  --weather-format era5 `
-  --irradiance-unit j_per_m2 `
-  --output data\philippines_offgrid_8760.csv
-```
-
-Then set the `dataset` field in `configs/scenarios.json` to `data/philippines_offgrid_8760.csv` and rerun:
-
-```powershell
-.\.venv\Scripts\python scripts\run_scenarios.py
-.\.venv\Scripts\python scripts\run_sensitivity.py
-.\.venv\Scripts\python scripts\plot_results.py
-```
-
-## Input Status
-
-- Synthetic: the default PV resource from `model/weather_inputs.py` is generated from a reproducible daylight, seasonality, and cloud model. It is not measured weather.
-- Calibrated: the default load is generated by `model/load_archetypes.py` from editable peak demand, load factor, evening peak strength, seasonal multipliers, commercial load fraction, tourism months, and random seed. It is synthetic but calibrated by explicit assumptions.
-- Real: NASA POWER or ERA5 hourly weather CSV files can replace synthetic PV. The model converts irradiance and temperature into `pv_capacity_factor`. Real measured load is not included unless you replace `load_mw` in the prepared 8760-hour dataset.
-
 ## Weather File Columns
 
-Supported external inputs are CSV-first to keep the Windows workflow simple:
-
 - NASA POWER hourly CSV: `YEAR,MO,DY,HR,ALLSKY_SFC_SW_DWN`; optional `T2M`.
-- ERA5 hourly CSV export: a time column plus `ssrd` or `surface_solar_radiation_downwards`; optional `t2m`.
-- Generic hourly CSV: `timestamp` plus either `ghi_w_per_m2` or `pv_capacity_factor`.
+- ERA5 hourly CSV export: a time column plus `ssrd` or
+  `surface_solar_radiation_downwards`; optional `t2m`.
+- Generic hourly CSV: `timestamp` plus `ghi_w_per_m2` or `pv_capacity_factor`.
 
-ERA5 NetCDF or GRIB files should be exported to CSV before use.
+ERA5 NetCDF/GRIB files must be exported to CSV before use.
+
+## Key Results (post-revision)
+
+| Metric | Value |
+|---|---|
+| Economic crossover (μ=1, carbon=150 USD/tCO₂) | 378 USD/MWh delivered diesel |
+| Dominant cost driver | PV CAPEX (span 148 USD/MWh) |
+| H₂ tank right-sized to | 10,000 kg (max LP utilisation 5,595 kg) |
+| DB worst-case survivability (matched backbone, all sizes) | 0 h |
+| BH worst-case survivability (14 MW PV backbone) | 48 h (CLSR 1.0) |
+| D0 (no diesel) BH CLSR_min | 1.000 |
+| Diesel-trip 500 ms RoCoF | 5.91 Hz/s (secondary control needed) |
 
 ## Resilience Analysis
 
-`configs/scenarios.json` contains:
-
-- outage frequency per year
-- outage duration
-- reproducible random outage start seed
-- critical load fraction
-- whether diesel is available during outage events
-- value of lost load for resilience-adjusted sensitivity cost
-
-The resilience post-processor evaluates random outage events against each dispatch trajectory and reports:
-
-- LPSP
-- EENS
-- critical load served ratio
-- loss-of-load hours
-- minimum and mean survivable outage duration
-
-By default, outage events represent periods when diesel is unavailable, so PV, batteries, and hydrogen must serve critical load.
-
-## Sensitivity Study
-
-`scripts/run_sensitivity.py` sweeps:
-
-- delivered diesel cost
-- outage duration as the outage severity variable
-- hydrogen CAPEX multiplier for electrolyzer, fuel cell, and H2 tank
-- carbon price
-
-The sensitivity CSV reports annual cost, carbon, resilience KPIs, resilience penalty, and resilience-adjusted cost for all cases.
-
-## Outputs
-
-Running the full workflow creates:
-
-- `data/synthetic_island_8760.csv`
-- `results/dispatch_battery_only.csv`
-- `results/dispatch_diesel_battery.csv`
-- `results/dispatch_battery_hydrogen.csv`
-- `results/outage_events.csv`
-- `results/summary.csv`
-- `results/resilience_summary.csv`
-- `results/annual_costs.csv`
-- `results/sensitivity_summary.csv`
-- `figures/annual_dispatch.png`
-- `figures/battery_soc.png`
-- `figures/hydrogen_inventory.png`
-- `figures/annual_cost_comparison.png`
-- `figures/threshold_heatmap.png`
-- `figures/cost_resilience_tradeoff.png`
-
-## Manuscript
-
-**The current submission-ready manuscript is `main_revised.tex`** (Applied Energy
-resubmission APEN-D-26-09220, major revision). Compile with:
-
-```powershell
-pdflatex -interaction=nonstopmode main_revised.tex
-bibtex main_revised
-pdflatex -interaction=nonstopmode main_revised.tex
-pdflatex -interaction=nonstopmode main_revised.tex
-```
-
-`main.tex` is the original first-submission draft and is retained for reference
-only. All updated numbers, figures (fig02–fig07), and analyses described in the
-response to reviewers are in `main_revised.tex`.
-
-Key changes in this revision:
-- Load archetype re-anchored to local time UTC+8 (Philippines) — evening peak
-  now correctly at local 20:00 (was 04:00 UTC artefact).
-- H2 tank right-sized to 10,000 kg (max LP utilisation 5,595 kg; 44% headroom).
-- Full E1–E6 analyses: fine threshold contour, cost-driver tornado, matched
-  backbone, diesel-outage robustness, frequency stability.
-- Figures fig02–fig07 regenerated; fig02 x-axis in local time (UTC+8).
+The resilience post-processor evaluates 4 random outage events per year
+(48 h duration, 10 seeds) and reports LPSP, EENS, critical-load served ratio
+(CLSR), and minimum/mean survivable outage duration. Diesel is unavailable
+during outages in the base case (D0).
 
 ## Model Notes
 
-This remains an operations baseline, not a capacity expansion model. Technology capacities are fixed in `configs/scenarios.json`, then hourly dispatch is optimized to minimize annual operating cost and unmet-load penalties. Annual cost is calculated after dispatch by adding annualized capital and fixed O&M.
+Fixed-capacity operations model: technology sizes are set in
+`configs/scenarios.json`, then hourly dispatch is optimised to minimise annual
+cost + unmet-load penalty. Cyclic end-of-year SOC and H₂ inventory constraints
+prevent artificial drawdown.
 
-The formulation uses cyclic end-of-year battery SOC and hydrogen tank inventory constraints. That avoids drawing down storage at the end of the simulation year and makes scenario comparisons cleaner.
-
-Sensitivity cases reuse dispatch results when only CAPEX, outage duration, or post-dispatch carbon/resilience valuation changes do not alter the dispatch objective. This keeps the full sweep practical on a local Windows machine while retaining Pyomo and HiGHS for the hourly dispatch solutions.
+Sensitivity sweeps reuse dispatch results when only CAPEX, carbon price, or
+outage duration changes (no re-solve needed), keeping the 19×19 E1 sweep
+practical on a local machine.
