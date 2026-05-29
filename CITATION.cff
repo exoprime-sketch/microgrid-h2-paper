@@ -17,4 +17,4 @@ keywords:
   - long-duration storage
   - techno-economic analysis
   - critical load
-abstract: "Reproducible code and data for the Applied Energy resubmission (APEN-D-26-09220) on islanded battery-hydrogen microgrids: 8760-h real-weather dispatch, cost-resilience threshold, component cost-driver attribution, matched-backbone resilience, diesel-support robustness, and reduced-order frequency-stability screening."
+abstract: "Reproducible code and data for an 8760-h real-weather study of islanded battery-hydrogen microgrids: chronological dispatch, cost-resilience threshold, component cost-driver attribution, matched-backbone resilience, diesel-support robustness, and reduced-order frequency-stability screening."

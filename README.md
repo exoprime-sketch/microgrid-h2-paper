@@ -1,7 +1,7 @@
-# Island Microgrid Hydrogen Study — Applied Energy Revision
+# Island Microgrid Hydrogen Study
 
-Reproducible code and data for the Applied Energy resubmission
-**APEN-D-26-09220** comparing battery--hydrogen against PV--diesel--battery
+Reproducible code and data
+comparing battery--hydrogen against PV--diesel--battery
 portfolios in a Philippine off-grid island. The analysis covers cost thresholds,
 component-level cost drivers, matched-backbone resilience, diesel-support
 robustness, and reduced-order frequency stability.
