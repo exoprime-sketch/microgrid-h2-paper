@@ -11,7 +11,7 @@
 \usepackage{url}
 \urlstyle{same}
 
-\journal{Journal of Energy Storage}
+\journal{International Journal of Hydrogen Energy}
 
 \newcolumntype{Y}{>{\centering\arraybackslash}X}
 \emergencystretch=2em
@@ -154,6 +154,11 @@ is weakest precisely during the diesel-trip handover that also drives its
 energy-resilience weakness. Together these results show that battery--hydrogen is
 defensible whenever delivered diesel is costly or diesel support is degradable,
 both of which characterise remote-island contingencies.
+Although demonstrated on a Philippine off-grid island, the framework---and each of
+its threshold, attribution, technology-isolation, robustness, and
+dynamic-feasibility components---is general and transferable to any islanded
+system, with the case-study magnitudes serving as illustrative rather than
+site-specific claims.
 
 The remainder of the paper is organised as follows.
 Section~\ref{sec:methods} describes the system model, cost formulation, resilience
@@ -461,7 +466,7 @@ periods---and is retained only as a renewable-only reference; the analysis that
 follows compares diesel-battery and battery-hydrogen.
 
 A pre-analysis of the hydrogen design exposed a capital oversizing carried by the
-original fixed-capacity specification. The 50{,}000~kg hydrogen tank accounted for
+initial fixed-capacity specification. The 50{,}000~kg hydrogen tank accounted for
 47\% of the battery-hydrogen capital while providing storage an order of
 magnitude beyond the design's actual need, which is bounded by two requirements
 that are both far below 50{,}000~kg. First, the cost-optimal annual dispatch never
@@ -525,9 +530,8 @@ lifts it to 425~USD MWh$^{-1}$ (Table~\ref{tab:crossover}). Internalising the
 resilience value of avoided unserved energy at $\mathrm{VOLL}=5000$~USD MWh$^{-1}$
 lowers the crossover to \textbf{344~USD MWh$^{-1}$}, because the diesel portfolio's
 residual outage exposure is then priced. The crossover is interior to the swept
-diesel range for every multiplier level and reproduces, at the overlapping points,
-the coarse three-value sensitivity of the original manuscript---now resolved as a
-continuous frontier.
+diesel range for every multiplier level and resolving the cost--resilience
+trade-off as a continuous frontier rather than a coarse point estimate.
 
 \begin{table}[H]
 \centering
@@ -680,8 +684,9 @@ load (worst-case survivable duration 0~h).}
 The resilience comparison so far assumes diesel is unavailable during an outage.
 Figure~\ref{fig:robust} relaxes this across graded support cases. Under full
 unavailability (D0) the diesel-battery worst-case survivability is zero
-hours and the worst-case CLSR is 0.58 across ten seeds---the single-seed value of
-0.65 in the original manuscript was optimistic. Restoring support closes the gap
+hours and the worst-case CLSR is 0.58 across ten seeds, materially lower than a
+single-seed draw would suggest---reporting the worst case over multiple seeds is
+therefore essential. Restoring support closes the gap
 only above clear thresholds: the diesel-battery portfolio matches the
 hydrogen portfolio's 48-h survivability only with $\ge$50\% derating (D1) or
 $\ge$12~h of fuel (D2). Most strikingly, any start-up or delivery delay collapses
